@@ -10,3 +10,4 @@ omegaconf
 hydra-core
 huggingface_hub
 datasets
+flash-attn
