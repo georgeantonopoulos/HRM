@@ -186,17 +186,20 @@ def convert_dataset(config: DataProcessConfig):
     with open(os.path.join(config.output_dir, "char_vocab.json"), "w") as f:
         json.dump(char_vocab, f, indent=2)
     
-    # Process each split
+    # Process each split - map HuggingFace splits to HRM directory names
+    # HuggingFace: "train" -> HRM: "train", HuggingFace: "validation" -> HRM: "test"
+    split_mapping = {"train": "train", "validation": "test"}
     splits_data = {}
-    for split_name in ["train", "validation"]:
-        print(f"\nProcessing {split_name} split...")
+
+    for hf_split_name, hrm_split_name in split_mapping.items():
+        print(f"\nProcessing {hf_split_name} split -> {hrm_split_name} directory...")
         
         try:
-            split_data = convert_subset(split_name, config, char_vocab)
-            splits_data[split_name] = split_data
+            split_data = convert_subset(hf_split_name, config, char_vocab)
+            splits_data[hrm_split_name] = split_data
             
-            # Save split data
-            split_dir = os.path.join(config.output_dir, split_name)
+            # Save split data to HRM directory name
+            split_dir = os.path.join(config.output_dir, hrm_split_name)
             os.makedirs(split_dir, exist_ok=True)
             
             for key, value in split_data.items():
@@ -222,10 +225,10 @@ def convert_dataset(config: DataProcessConfig):
             with open(os.path.join(split_dir, "dataset.json"), "w") as f:
                 json.dump(metadata.model_dump(), f, indent=2)
                 
-            print(f"Saved {split_name}: {len(split_data['inputs'])} examples")
+            print(f"Saved {hrm_split_name}: {len(split_data['inputs'])} examples")
             
         except Exception as e:
-            print(f"Warning: Could not process {split_name} split: {e}")
+            print(f"Warning: Could not process {hf_split_name} split: {e}")
     
     # Save global identifiers mapping (for compatibility)
     with open(os.path.join(config.output_dir, "identifiers.json"), "w") as f:
