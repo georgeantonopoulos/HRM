@@ -1,0 +1,6 @@
+# Minimal requirements for OpenAssistant dataset creation only
+numpy
+datasets
+tqdm
+pydantic
+argdantic
