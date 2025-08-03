@@ -19,7 +19,7 @@ class DataProcessConfig(BaseModel):
     source_repo: str = "OpenAssistant/oasst1"
     output_dir: str = "data/openassistant-oasst1"
     
-    max_seq_len: int = 512
+    max_seq_len: int = 256
     subsample_size: Optional[int] = None
     min_text_length: int = 10
     max_text_length: int = 2048
